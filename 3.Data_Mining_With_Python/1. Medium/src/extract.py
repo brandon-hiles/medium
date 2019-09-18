@@ -17,7 +17,23 @@ class MediumExtractor(object):
         https://medium.com/feed/@username
         """
 
-        return True
+        # This can be improved through regex
+        condition_1 = self.url.split("://")[0] == 'https' # Check url contains https://
+        condition_2 = len(self.url.split("medium.com")) > 1 # Check url contains medium.com
+        condition_3 = len(self.url.split("/feed/")) > 1 # Check url contains /feed/
+        condition_4 = len(self.url.split("/@")) > 1 # Check url contains /@
+
+        if (condition_1 == False):
+            return False
+        elif (condition_2 == False):
+            return False
+        elif (condition_3 == False):
+            return False
+        elif (condition_4 == False):
+            return False
+        else:
+            return True
+        
 
     def validate_account(self):
         """
