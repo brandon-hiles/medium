@@ -1,5 +1,6 @@
 import requests
 import xml.etree.ElementTree as ET
+import re
 
 class MediumExtractor(object):
 
@@ -17,23 +18,12 @@ class MediumExtractor(object):
         https://medium.com/feed/@username
         """
 
-        # This can be improved through regex
-        condition_1 = self.url.split("://")[0] == 'https' # Check url contains https://
-        condition_2 = len(self.url.split("medium.com")) > 1 # Check url contains medium.com
-        condition_3 = len(self.url.split("/feed/")) > 1 # Check url contains /feed/
-        condition_4 = len(self.url.split("/@")) > 1 # Check url contains /@
-
-        if (condition_1 == False):
-            return False
-        elif (condition_2 == False):
-            return False
-        elif (condition_3 == False):
-            return False
-        elif (condition_4 == False):
+        url_structure = "https://medium.com/feed/"
+        result = re.search(url_structure, self.url)
+        if result == None:
             return False
         else:
-            return True
-        
+            return True        
 
     def validate_account(self):
         """
@@ -58,7 +48,7 @@ class MediumExtractor(object):
                 if (root[0][idx].tag == 'item'):
                     articles.append(root[0][idx])
         else:
-            print("Please enter a valid medium account")
+            print("Please enter a valid medium url")
 
         return articles
 
