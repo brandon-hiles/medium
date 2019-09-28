@@ -36,7 +36,7 @@ class MediumExtractor(object):
 
     def grab_articles(self):
         """
-        Main Function: Queries the medium RSS feed and returns a list of articles published.
+        Query Function: Queries the medium RSS feed and returns a list of articles published.
         """
 
         articles = []
@@ -53,6 +53,9 @@ class MediumExtractor(object):
         return articles
 
     def parse_articles(self, tag):
+        """
+        Parser Function: Used to parse the data from the grab_articles method
+        """
         articles = self.grab_articles()
         info = []
         for article in articles:
