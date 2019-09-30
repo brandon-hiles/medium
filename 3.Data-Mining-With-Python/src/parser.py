@@ -5,7 +5,12 @@ from src.db import Database
 
 class MediumParser(object):
 
-    def __init__(self, data):
+    def __init__(self, username, data, host, port, database):
+        self.username = username
+        self.host = host
+        self.port = port
+        self.database = database
+        self.db = Database(self.host, self.port, database=database)
         self.data = data
 
     def __repr__(self):
@@ -33,4 +38,14 @@ class MediumParser(object):
         return texts
 
     def store_information(self):
-        pass
+        data = self.grab_text()
+        db = self.db.select_database(self.database)
+        for num, val in enumerate(data):
+            query = {
+                "article " + str(num+1) : val
+            }
+            if self.db.check_collection(collection=self.username, query=query) == False:
+                db[self.username].insert_one(query).inserted_id
+                print("Successfully added to database")
+            else:
+                print("Data already exists in database")

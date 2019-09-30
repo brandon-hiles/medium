@@ -3,7 +3,6 @@ import time
 
 from src.extract import MediumExtractor
 from src.parser import MediumParser
-from src.db import Database
 
 username = "brandon.j.hiles"
 url = "https://medium.com/feed/@" + username
@@ -25,9 +24,8 @@ if __name__ == '__main__':
         print(f"Gathering information on {username} from Medium")
         extractor = MediumExtractor(url=url)
         articles = extractor.parse_articles(tag="link")
-        parser = MediumParser(data=articles)
-        text = parser.grab_text()
-        print(text)
+        parser = MediumParser(username=username, data=articles, host=host, port=port, database="medium")
+        parser.store_information()
 
 
     print(f"Time Execution: {time.time() - start_time} s")
