@@ -1,0 +1,36 @@
+{
+    "name": "og",
+    "version": "1.0.0",
+    "description": "",
+    "main": "index.js",
+    "scripts": {
+      "start": "webpack-dev-server",
+      "test": "jest"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "ISC",
+    "devDependencies": {
+      "@babel/core": "^7.6.4",
+      "@babel/preset-env": "^7.7.1",
+      "@babel/preset-react": "^7.7.0",
+      "babel-jest": "^24.9.0",
+      "babel-loader": "^8.0.6",
+      "copy-webpack-plugin": "^5.0.4",
+      "css-loader": "^3.2.0",
+      "path": "^0.12.7",
+      "sass-loader": "^8.0.0",
+      "webpack": "^4.41.1",
+      "webpack-cli": "^3.3.9",
+      "webpack-dev-server": "^3.8.2"
+    },
+    "dependencies": {
+      "axios": "^0.19.0",
+      "node-sass": "^4.12.0",
+      "react": "^16.10.2",
+      "react-dom": "^16.10.2",
+      "react-router-dom": "^5.1.2",
+      "style-loader": "^1.0.0"
+    }
+  }
+  
