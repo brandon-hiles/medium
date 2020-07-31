@@ -1,4 +1,10 @@
 #Javascript Testing
 
-* This repo is intended as an introduction to popular 2019 javascript testing frameworks. To illustrate the power of testing your applications, I built a simple untested application, which can found be in og directory. 
-* In the tests/ directory, we define the folder name by framework we are using such 1.jest.
+* This repo demonstrates how to utilize 4 of the most popular javascript testing frameworks (Jest, Mocha, Jasmine, Karma) with a detailed description of each of these frameworks, which can be found on my blog https://medium.com/@brandon.j.hiles. 
+
+## Breakdown of Repository
+* orginal/: This is our project detailed in the blog with zero testing coverage.
+* jest/: This is our porject + testing coverage with jest.
+* mocha/: This is our project + testing coverage with mocha.
+* jasmine/: This is our project + testing coverage with jasmine.
+* karma/: This is our project + testing coverage with karma.
