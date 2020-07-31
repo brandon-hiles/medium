@@ -12,13 +12,22 @@ class Database(object):
         return f"Database Object for {self.host}:{self.port}"
         
     def select_database(self, database):
+        """ 
+        Helper Function: Selects the database instance
+        """
         return self.client[self.database]
 
     def select_collection(self, collection):
+        """
+        Helper Function: Selects the collection instance form mongo
+        """
         return self.select_database(self.database)[collection]
 
     def check_collection(self, collection, query):
-        # Check if collection exists in db
+        """
+        Boolean Function: Test whether the given query already exists within the
+        database to avoid duplication of data
+        """
 
         collection = self.select_collection(collection=collection)
         result = collection.find(query)

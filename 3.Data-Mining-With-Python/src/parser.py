@@ -27,6 +27,10 @@ class MediumParser(object):
         return element
 
     def grab_text(self):
+        """
+        Main Metod: grab_text is responsible for grabbing the text from all the articles
+        and storing the information into an array.
+        """
 
         texts = []
         for website in self.data:
@@ -38,6 +42,11 @@ class MediumParser(object):
         return texts
 
     def store_information(self):
+        """
+        Main Method: store_information is responsible for storing the information into the database via
+        the Database interface
+        """
+
         data = self.grab_text()
         db = self.db.select_database(self.database)
         for num, val in enumerate(data):
