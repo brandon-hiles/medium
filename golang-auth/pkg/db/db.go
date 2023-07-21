@@ -4,9 +4,13 @@ import (
 	"context"
 	"database/sql"
 	"time"
+
+	"github.com/brandon-hiles/medium/golang-auth/pkg/models"
 )
 
 type DatabaseInterface interface {
+	InsertUser(first_name string, last_name string, phone_number string, email string, password string) error
+	GetUserByEmail(email string) (*models.User, error)
 }
 
 type PostgresConnection struct {
