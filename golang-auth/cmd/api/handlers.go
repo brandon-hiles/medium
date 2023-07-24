@@ -6,9 +6,10 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"strconv"
 
 	"github.com/brandon-hiles/medium/golang-auth/pkg/auth"
-	"github.com/brandon-hiles/medium/golang-auth/pkg/email"
+	"github.com/golang-jwt/jwt/v4"
 )
 
 type JSONResponse struct {
@@ -103,29 +104,6 @@ func (app *application) create_user(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func (app *application) send_signup_email(w http.ResponseWriter, r *http.Request) {
-
-	var requestPayload struct {
-		Email string `json:"email"`
-	}
-	err := readJSON(w, r, &requestPayload)
-	if err != nil {
-		errorJSON(w, err, http.StatusBadRequest)
-		return
-	}
-
-	to := []string{requestPayload.Email}
-	url := "http://localhost:9000/login"
-
-	// validate user against database
-	user, err := app.pg.GetUserByEmail(requestPayload.Email)
-	if err != nil {
-		errorJSON(w, errors.New("invalid credentials"), http.StatusBadRequest)
-		return
-	}
-	email.SendSignupVerificationEmail(app.email, to, user.Email, url)
-}
-
 func (app *application) authenticate(w http.ResponseWriter, r *http.Request) {
 	var requestPayload struct {
 		Email    string `json:"email"`
@@ -172,9 +150,54 @@ func (app *application) authenticate(w http.ResponseWriter, r *http.Request) {
 }
 
 func (app *application) refresh(w http.ResponseWriter, r *http.Request) {
+	for _, cookie := range r.Cookies() {
+		if cookie.Name == "refresh_token" {
+			claims := &auth.Claims{}
+			refreshToken := cookie.Value
 
+			// parse the token to get the claims
+			_, err := jwt.ParseWithClaims(refreshToken, claims, func(token *jwt.Token) (interface{}, error) {
+				return []byte(goDotEnvVariable("JWT_SECRET")), nil
+			})
+
+			if err != nil {
+				errorJSON(w, errors.New("unauthorized"), http.StatusUnauthorized)
+				return
+			}
+
+			// get the user id from the token claims
+			userID, err := strconv.Atoi(claims.Subject)
+			if err != nil {
+				errorJSON(w, errors.New("unknown user"), http.StatusUnauthorized)
+				return
+			}
+
+			user, err := app.pg.GetUserByID(userID)
+			if err != nil {
+				errorJSON(w, errors.New("unknown user"), http.StatusUnauthorized)
+				return
+			}
+
+			u := auth.JwtUser{
+				ID:        user.ID,
+				FirstName: user.FirstName,
+				LastName:  user.LastName,
+			}
+
+			tokenPairs, err := app.auth.GenerateTokenPair(&u)
+			if err != nil {
+				errorJSON(w, errors.New("error generating tokens"), http.StatusUnauthorized)
+				return
+			}
+
+			http.SetCookie(w, app.auth.GetRefreshCookie(tokenPairs.RefreshToken))
+
+			writeJSON(w, http.StatusOK, tokenPairs)
+		}
+	}
 }
 
 func (app *application) logout(w http.ResponseWriter, r *http.Request) {
-
+	http.SetCookie(w, app.auth.GetExpiredRefreshCookie())
+	w.WriteHeader(http.StatusAccepted)
 }

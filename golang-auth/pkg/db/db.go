@@ -11,6 +11,7 @@ import (
 type DatabaseInterface interface {
 	InsertUser(first_name string, last_name string, phone_number string, email string, password string) error
 	GetUserByEmail(email string) (*models.User, error)
+	GetUserByID(id int) (*models.User, error)
 }
 
 type PostgresConnection struct {

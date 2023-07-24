@@ -35,6 +35,31 @@ func (pg *PostgresConnection) GetUserByEmail(email string) (*models.User, error)
 	return &user, nil
 }
 
+func (pg *PostgresConnection) GetUserByID(id int) (*models.User, error) {
+	ctx, cancel := context.WithTimeout(context.Background(), 3*time.Second)
+	defer cancel()
+
+	query := `select user_id, created_at, updated_at, email, password from users where user_id = $1`
+
+	row := pg.DB.QueryRowContext(ctx, query, id)
+
+	var user models.User
+
+	err := row.Scan(
+		&user.ID,
+		&user.CreatedAt,
+		&user.UpdatedAt,
+		&user.Email,
+		&user.Password,
+	)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return &user, nil
+}
+
 // InsertUser is a DB Insert function
 func (pg *PostgresConnection) InsertUser(first_name string, last_name string, phone_number string, email string, password string) error {
 	hashPassword, _ := HashPassword(password)

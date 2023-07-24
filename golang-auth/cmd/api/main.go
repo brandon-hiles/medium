@@ -10,7 +10,6 @@ import (
 
 	"github.com/brandon-hiles/medium/golang-auth/pkg/auth"
 	"github.com/brandon-hiles/medium/golang-auth/pkg/db"
-	"github.com/brandon-hiles/medium/golang-auth/pkg/email"
 	"github.com/joho/godotenv"
 )
 
@@ -18,7 +17,6 @@ type application struct {
 	logger *log.Logger
 	pg     db.DatabaseInterface
 	auth   auth.Auth
-	email  email.Email
 }
 
 // Basic way to load in a environment variables from .env file
@@ -37,19 +35,6 @@ func main() {
 	var app application
 	app.logger = log.New(os.Stdout, "", log.Ldate|log.Ltime)
 	port := 8001
-
-	// Setup our Email
-	from := goDotEnvVariable("EMAIL_EMAIL")
-	password := goDotEnvVariable("EMAIL_PASSWORD")
-	email_host := "smtp.gmail.com"
-	email_port := "587"
-
-	app.email = email.Email{
-		From:     from,
-		Password: password,
-		Host:     email_host,
-		Port:     email_port,
-	}
 
 	// Connect to our postgres database
 	pg_user := goDotEnvVariable("DB_USER")
